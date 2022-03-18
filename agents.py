@@ -63,6 +63,33 @@ class MinimaxAgent:
         # #
         # return 42  # Change this line!
 
+        next_player = state.next_player()
+        utility = 0
+        if next_player == -1:
+            utility = self.min_val(state)
+        elif next_player == 1:
+            utility = self.max_val(state)
+
+        return utility
+
+    def max_val(self, state, **kwargs):
+        if state.is_full() is True:  # if no more moves -> return utility
+            return state.utility()
+        v = -math.inf
+        successors = state.successors()
+        for move, next in successors:
+            v = max(v, self.min_val(next))
+        return v
+
+    def min_val(self, state, **kwargs):
+        if state.is_full() is True:  # if no more moves -> return utility
+            return state.utility()
+        v = math.inf
+        successors = state.successors()
+        for move, next in successors:
+            v = min(v, self.max_val(next))
+        return v
+    
 
 class MinimaxHeuristicAgent(MinimaxAgent):
     """Artificially intelligent agent that uses depth-limited minimax to select the best move.
@@ -90,6 +117,65 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # #
         # return 9  # Change this line!
 
+
+        ##TODO
+        ## Possibly do if next_player return ___
+        ## elif next_player return ____
+        ## else:
+        ## return_value = 0
+        next_player = state.next_player()
+        return_value = 0
+
+        if next_player == -1:
+            return_value = self.get_min_val(state, depth=0)  # find min value
+
+
+        elif next_player == 1:
+            return_value = self.get_max_val(state, depth=0) # find max value
+        return return_value
+
+    def get_max_value(self, state, **kwargs):
+
+        curr_depth = kwargs["depth"]
+
+        if curr_depth == self.depth_limit:
+            return self.evaluation(state)
+
+        if state.is_full():
+            return state.utility()
+
+        value = -math.inf
+        successors = state.successors()
+        next_depth = curr_depth + 1
+
+        for i, j in successors:
+            maximum = self.get_max_value(j, depth=next_depth)
+            if maximum < value:
+                value = maximum
+
+        return value
+
+    def get_min_value(self, state, **kwargs):
+
+        curr_depth = kwargs["depth"]
+
+        if curr_depth == self.depth_limit:
+            return self.evaluation(state)
+
+        if state.is_full():
+            return state.utility()
+
+        value = math.inf
+        successors = state.successors()
+        next_depth = curr_depth + 1
+
+        for i, j in successors:
+            minimum = self.get_min_value(j, depth=next_depth)
+            if minimum < value:
+                value = minimum
+
+        return value
+
     def minimax_depth(self, state, depth):
         """This is just a helper method fir minimax(). Feel free to use it or not. """
 
@@ -112,7 +198,78 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant. 
-        return state.utility() + 3
+        e1 = self.e1(state)
+        e2 = self.e2(state)
+        e3 = self.e3(state)
+        estimate = e2  # + e3
+
+        return estimate
+
+        # score based on pieces near the ce
+
+    def e1(self, state):
+        mid = state.num_rows // 2
+        cols = state.get_cols()
+        h = cols[mid].count(1) - cols[mid].count(-1)
+        return h
+
+        # score based on pieces near the center (Normal)
+
+    def e2(self, state):
+        ncols = state.num_cols
+        ci = ncols // 2
+
+        sd = math.ceil(ncols / 4)
+        weights = []
+
+        for i in range(-ci, ci + 1):
+            w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+            weights.append(w)
+
+        cols = state.get_cols()
+        h = 0
+        count = 0
+        for col in cols:
+            h += (col.count(1) - col.count(-1)) * weights[count]
+            count += 1
+
+        return h
+
+        # number of streaks
+
+    def e3(self, state):
+        players = [1, -1]
+        open_streaks = {1: 0, -1: 0}
+        for player in players:
+            for run in state.get_rows() + state.get_cols() + state.get_diags():
+                garfield = list(zip(*self.streaks(run)))
+
+                if 0 not in garfield[0]:
+                    continue
+
+                for s in garfield[1]:
+                    if (s >= 3) and (player == garfield[0][garfield[1].index(s)]):
+                        open_streaks[player] += 1
+
+        return open_streaks[1] - open_streaks[-1]
+
+    def streaks(self, lst):
+        """Get the lengths of all the streaks of the same element in a sequence."""
+        rets = []  # list of (element, length) tuples
+        prev = lst[0]
+        curr_len = 1
+        for curr in lst[1:]:
+            if curr == prev:
+                curr_len += 1
+            else:
+                rets.append((prev, curr_len))
+                prev = curr
+                curr_len = 1
+        rets.append((prev, curr_len))
+        return rets
+        
+        
+
 
 
 class MinimaxPruneAgent(MinimaxAgent):
