@@ -89,7 +89,7 @@ class MinimaxAgent:
         for move, next in successors:
             v = min(v, self.max_val(next))
         return v
-    
+
 
 class MinimaxHeuristicAgent(MinimaxAgent):
     """Artificially intelligent agent that uses depth-limited minimax to select the best move.
@@ -100,6 +100,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         self.depth_limit = depth_limit
 
     def minimax(self, state):
+        ## Reviewed by Cole
         """Determine the heuristically estimated minimax utility value of the given state.
 
         The depth data member (set in the constructor) determines the maximum depth of the game 
@@ -134,9 +135,10 @@ class MinimaxHeuristicAgent(MinimaxAgent):
             return_value = self.get_max_val(state, depth=0) # find max value
         return return_value
 
-    def get_max_value(self, state, **kwargs):
+    def get_max_value(self, state, **arguments):
+        ## Reviewed by Cole
 
-        curr_depth = kwargs["depth"]
+        curr_depth = arguments["depth"]
 
         if curr_depth == self.depth_limit:
             return self.evaluation(state)
@@ -155,9 +157,9 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return value
 
-    def get_min_value(self, state, **kwargs):
-
-        curr_depth = kwargs["depth"]
+    def get_min_value(self, state, **arguments):
+        ## Reviewed by Cole
+        curr_depth = arguments["depth"]
 
         if curr_depth == self.depth_limit:
             return self.evaluation(state)
