@@ -39,14 +39,15 @@ class MinimaxAgent:
 
     def get_move(self, state):
         """Select the best available move, based on minimax value."""
-        next_player = state.next_player()
-        best_util = -math.inf if next_player == 1 else math.inf
+        """Select the best available move, based on minimax value."""
+        nextp = state.next_player()
+        best_util = -math.inf if nextp == 1 else math.inf
         best_move = None
         best_state = None
 
         for move, state in state.successors():
             util = self.minimax(state)
-            if ((next_player == 1) and (util > best_util)) or ((next_player == -1) and (util < best_util)):
+            if ((nextp == 1) and (util > best_util)) or ((nextp == -1) and (util < best_util)):
                 best_util, best_move, best_state = util, move, state
         return best_move, best_state
 
@@ -63,32 +64,42 @@ class MinimaxAgent:
         # #
         # return 42  # Change this line!
 
-        next_player = state.next_player()
-        return_value = 0
-        if next_player == -1:
-            return_value = self.get_min_value(state)
-        elif next_player == 1:
+        nextp = state.next_player()
+
+        if nextp == 1:
             return_value = self.get_max_value(state)
+        elif nextp == -1:
+            return_value = self.get_min_value(state)
+        else:
+            return_value = 0
 
         return return_value
 
-    def get_max_value(self, state, **argumentss):
-        if state.is_full() is True:  # if no more moves -> return utility
+    def get_max_value(self, state, **arguments):
+        if state.is_full() is True:
             return state.utility()
-        inf = -math.inf
-        successors = state.successors()
-        for i, j in successors:
-            inf = max(inf, self.get_min_value(j))
-        return inf
+
+        return_value = -math.inf
+        succs = state.successors()
+
+        for i, j in succs:
+            maximum = self.get_min_value(j)
+            return_value = max(return_value, maximum)
+
+        return return_value
 
     def get_min_value(self, state, **arguments):
-        if state.is_full() is True:  # if no more moves -> return utility
+        if state.is_full() is True:
             return state.utility()
-        inf = math.inf
-        successors = state.successors()
-        for move, next in successors:
-            v = min(v, self.get_max_value(next))
-        return v
+
+        return_value = math.inf
+        succs = state.successors()
+
+        for i, j in succs:
+            minimum = self.get_max_value(j)
+            return_value = min(return_value, minimum)
+            
+        return return_value
 
 
 class MinimaxHeuristicAgent(MinimaxAgent):
