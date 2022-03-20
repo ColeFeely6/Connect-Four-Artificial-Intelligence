@@ -72,7 +72,7 @@ class MinimaxAgent:
 
         return return_value
 
-    def get_max_val(self, state, **argumentss):
+    def get_max_value(self, state, **argumentss):
         if state.is_full() is True:  # if no more moves -> return utility
             return state.utility()
         inf = -math.inf
