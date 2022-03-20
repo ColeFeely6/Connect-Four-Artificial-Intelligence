@@ -98,7 +98,7 @@ class MinimaxAgent:
         for i, j in succs:
             minimum = self.get_max_value(j)
             return_value = min(return_value, minimum)
-            
+
         return return_value
 
 
@@ -139,11 +139,11 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         return_value = 0
 
         if next_player == -1:
-            return_value = self.get_min_val(state, depth=0)  # find min value
+            return_value = self.get_min_value(state, depth=0)  # find min value
 
 
         elif next_player == 1:
-            return_value = self.get_max_val(state, depth=0) # find max value
+            return_value = self.get_max_value(state, depth=0) # find max value
         return return_value
 
     def get_max_value(self, state, **arguments):
@@ -157,16 +157,15 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         if state.is_full():
             return state.utility()
 
-        value = -math.inf
-        successors = state.successors()
+        return_value = -math.inf
+        succs = state.successors()
         next_depth = curr_depth + 1
 
-        for i, j in successors:
+        for i, j in succs:
             maximum = self.get_max_value(j, depth=next_depth)
-            if maximum < value:
-                value = maximum
+            return_value = min(return_value,maximum)
 
-        return value
+        return return_value
 
     def get_min_value(self, state, **arguments):
         ## Reviewed by Cole
@@ -178,16 +177,15 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         if state.is_full():
             return state.utility()
 
-        value = math.inf
-        successors = state.successors()
+        return_value = math.inf
+        succs = state.successors()
         next_depth = curr_depth + 1
 
-        for i, j in successors:
+        for i, j in succs:
             minimum = self.get_min_value(j, depth=next_depth)
-            if minimum < value:
-                value = minimum
+            return_value = min(return_value, minimum)
 
-        return value
+        return return_value
 
     def minimax_depth(self, state, depth):
         """This is just a helper method fir minimax(). Feel free to use it or not. """
