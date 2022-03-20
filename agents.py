@@ -39,14 +39,14 @@ class MinimaxAgent:
 
     def get_move(self, state):
         """Select the best available move, based on minimax value."""
-        nextp = state.next_player()
-        best_util = -math.inf if nextp == 1 else math.inf
+        next_player = state.next_player()
+        best_util = -math.inf if next_player == 1 else math.inf
         best_move = None
         best_state = None
 
         for move, state in state.successors():
             util = self.minimax(state)
-            if ((nextp == 1) and (util > best_util)) or ((nextp == -1) and (util < best_util)):
+            if ((next_player == 1) and (util > best_util)) or ((next_player == -1) and (util < best_util)):
                 best_util, best_move, best_state = util, move, state
         return best_move, best_state
 
@@ -64,30 +64,30 @@ class MinimaxAgent:
         # return 42  # Change this line!
 
         next_player = state.next_player()
-        utility = 0
+        return_value = 0
         if next_player == -1:
-            utility = self.min_val(state)
+            return_value = self.get_min_value(state)
         elif next_player == 1:
-            utility = self.max_val(state)
+            return_value = self.get_max_value(state)
 
-        return utility
+        return return_value
 
-    def max_val(self, state, **kwargs):
+    def get_max_val(self, state, **argumentss):
         if state.is_full() is True:  # if no more moves -> return utility
             return state.utility()
-        v = -math.inf
+        inf = -math.inf
         successors = state.successors()
-        for move, next in successors:
-            v = max(v, self.min_val(next))
-        return v
+        for i, j in successors:
+            inf = max(inf, self.get_min_value(j))
+        return inf
 
-    def min_val(self, state, **kwargs):
+    def get_min_value(self, state, **arguments):
         if state.is_full() is True:  # if no more moves -> return utility
             return state.utility()
-        v = math.inf
+        inf = math.inf
         successors = state.successors()
         for move, next in successors:
-            v = min(v, self.max_val(next))
+            v = min(v, self.get_max_value(next))
         return v
 
 
