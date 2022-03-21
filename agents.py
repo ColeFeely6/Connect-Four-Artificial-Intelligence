@@ -5,6 +5,11 @@ import math
 BOT_NAME = "INSERT NAME FOR YOUR BOT HERE OR IT WILL THROW AN EXCEPTION"
 
 
+## Todo:
+# See if **arguments are needed
+# Edit evaluation function
+# Do prune
+
 class RandomAgent:
     """Agent that picks a random available move.  You should be able to beat it."""
     def __init__(self, sd=None):
@@ -114,7 +119,6 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         self.depth_limit = depth_limit
 
     def minimax(self, state):
-        ## Reviewed by Cole
         """Determine the heuristically estimated minimax utility value of the given state.
 
         The depth data member (set in the constructor) determines the maximum depth of the game 
@@ -133,13 +137,13 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # return 9  # Change this line!
 
 
-        next_player = state.next_player()
+        nextp = state.next_player()
 
-        if next_player == -1:
+        if nextp == -1:
             return_value = self.get_min_value(state, depth=0)  # find min value
 
 
-        elif next_player == 1:
+        elif nextp == 1:
             return_value = self.get_max_value(state, depth=0) # find max value
 
         else:
@@ -169,6 +173,8 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
     def get_min_value(self, state, **arguments):
         ## Reviewed by Cole
+        return_value = math.inf
+        succs = state.successors()
         curr_depth = arguments["depth"]
 
         if curr_depth == self.depth_limit:
@@ -177,8 +183,6 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         if state.is_full():
             return state.utility()
 
-        return_value = math.inf
-        succs = state.successors()
         next_depth = curr_depth + 1
 
         for i, j in succs:
@@ -209,78 +213,25 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant. 
-        e1 = self.e1(state)
-        e2 = self.e2(state)
-        e3 = self.e3(state)
-        estimate = e2  # + e3
 
-        return estimate
+        number_of_columns = state.num_cols
+        ci = number_of_columns // 2
 
-        # score based on pieces near the ce
-
-    def e1(self, state):
-        mid = state.num_rows // 2
-        cols = state.get_cols()
-        h = cols[mid].count(1) - cols[mid].count(-1)
-        return h
-
-        # score based on pieces near the center (Normal)
-
-    def e2(self, state):
-        ncols = state.num_cols
-        ci = ncols // 2
-
-        sd = math.ceil(ncols / 4)
+        sd = math.ceil(number_of_columns / 4)
         weights = []
 
         for i in range(-ci, ci + 1):
-            w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+            w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
             weights.append(w)
 
-        cols = state.get_cols()
+        columns = state.get_cols()
         h = 0
         count = 0
-        for col in cols:
-            h += (col.count(1) - col.count(-1)) * weights[count]
+        for column in columns:
+            h += (column.count(1) - column.count(-1)) * weights[count]
             count += 1
 
         return h
-
-        # number of streaks
-
-    def e3(self, state):
-        players = [1, -1]
-        open_streaks = {1: 0, -1: 0}
-        for player in players:
-            for run in state.get_rows() + state.get_cols() + state.get_diags():
-                garfield = list(zip(*self.streaks(run)))
-
-                if 0 not in garfield[0]:
-                    continue
-
-                for s in garfield[1]:
-                    if (s >= 3) and (player == garfield[0][garfield[1].index(s)]):
-                        open_streaks[player] += 1
-
-        return open_streaks[1] - open_streaks[-1]
-
-    def streaks(self, lst):
-        """Get the lengths of all the streaks of the same element in a sequence."""
-        rets = []  # list of (element, length) tuples
-        prev = lst[0]
-        curr_len = 1
-        for curr in lst[1:]:
-            if curr == prev:
-                curr_len += 1
-            else:
-                rets.append((prev, curr_len))
-                prev = curr
-                curr_len = 1
-        rets.append((prev, curr_len))
-        return rets
-        
-        
-
 
 
 class MinimaxPruneAgent(MinimaxAgent):
@@ -310,7 +261,21 @@ class MinimaxPruneAgent(MinimaxAgent):
         # # Fill this in!
         # #
         # return 13  # Change this line!
+        nextp = state.next_player()
+        if nextp == -1:
+            return_value = self.get_min_value(state, depth=0)  # find min value
 
+
+        elif nextp == 1:
+            return_value = self.get_max_value(state, depth=0)  # find max value
+
+        else:
+            return_value = 0
+
+        return return_value
+
+
+    def get_min_value(self, state, depth):
     def alphabeta(self, state,alpha, beta):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
         # return 9 # change this line!
