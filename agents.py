@@ -2,7 +2,7 @@ import random
 import math
 
 
-BOT_NAME = "INSERT NAME FOR YOUR BOT HERE OR IT WILL THROW AN EXCEPTION"
+BOT_NAME = "Cole and Zach's Robot"
 
 
 ## Todo:
@@ -262,20 +262,20 @@ class MinimaxPruneAgent(MinimaxAgent):
         # #
         # return 13  # Change this line!
         nextp = state.next_player()
-        if nextp == -1:
-            return_value = self.get_min_value(state, depth=0)  # find min value
-
-
-        elif nextp == 1:
-            return_value = self.get_max_value(state, depth=0)  # find max value
-
-        else:
-            return_value = 0
-
-        return return_value
-
-
-    def get_min_value(self, state, depth):
+    #     if nextp == -1:
+    #         return_value = self.get_min_value(state, depth=0)  # find min value
+    #
+    #
+    #     elif nextp == 1:
+    #         return_value = self.get_max_value(state, depth=0)  # find max value
+    #
+    #     else:
+    #         return_value = 0
+    #
+    #     return return_value
+    #
+    #
+    # def get_min_value(self, state, depth):
     def alphabeta(self, state,alpha, beta):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
         # return 9 # change this line!
