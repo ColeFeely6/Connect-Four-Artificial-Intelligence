@@ -82,7 +82,7 @@ class MinimaxAgent:
 
         return return_value
 
-    def get_max_value(self, state):
+    def get_max_value(self, state, **arguments):
         return_value = -math.inf
         succs = state.successors()
 
@@ -95,7 +95,7 @@ class MinimaxAgent:
 
         return return_value
 
-    def get_min_value(self, state):
+    def get_min_value(self, state, **arguments):
         return_value = math.inf
         succs = state.successors()
 
