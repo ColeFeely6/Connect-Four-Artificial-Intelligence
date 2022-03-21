@@ -68,19 +68,21 @@ class MinimaxAgent:
 
         if nextp == 1:
             return_value = self.get_max_value(state)
+
         elif nextp == -1:
             return_value = self.get_min_value(state)
+
         else:
             return_value = 0
 
         return return_value
 
     def get_max_value(self, state, **arguments):
-        if state.is_full() is True:
-            return state.utility()
-
         return_value = -math.inf
         succs = state.successors()
+
+        if state.is_full() is True:
+            return state.utility()
 
         for i, j in succs:
             maximum = self.get_min_value(j)
@@ -89,11 +91,12 @@ class MinimaxAgent:
         return return_value
 
     def get_min_value(self, state, **arguments):
-        if state.is_full() is True:
-            return state.utility()
-
         return_value = math.inf
         succs = state.successors()
+
+
+        if state.is_full() is True:
+            return state.utility()
 
         for i, j in succs:
             minimum = self.get_max_value(j)
@@ -130,13 +133,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # return 9  # Change this line!
 
 
-        ##TODO
-        ## Possibly do if next_player return ___
-        ## elif next_player return ____
-        ## else:
-        ## return_value = 0
         next_player = state.next_player()
-        return_value = 0
 
         if next_player == -1:
             return_value = self.get_min_value(state, depth=0)  # find min value
@@ -144,12 +141,17 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         elif next_player == 1:
             return_value = self.get_max_value(state, depth=0) # find max value
+
+        else:
+            return_value = 0
+
         return return_value
 
     def get_max_value(self, state, **arguments):
         ## Reviewed by Cole
-
+        return_value = -math.inf
         curr_depth = arguments["depth"]
+        succs = state.successors()
 
         if curr_depth == self.depth_limit:
             return self.evaluation(state)
@@ -157,8 +159,6 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         if state.is_full():
             return state.utility()
 
-        return_value = -math.inf
-        succs = state.successors()
         next_depth = curr_depth + 1
 
         for i, j in succs:
