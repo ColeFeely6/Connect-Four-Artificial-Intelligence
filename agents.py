@@ -6,7 +6,6 @@ BOT_NAME = "Cole and Zach's Robot"
 
 
 ## Todo:
-# See if **arguments are needed
 # Edit evaluation function
 # Do prune
 
@@ -214,24 +213,30 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant. 
 
-        number_of_columns = state.num_cols
-        ci = number_of_columns // 2
-
-        sd = math.ceil(number_of_columns / 4)
-        weights = []
-
-        for i in range(-ci, ci + 1):
-            w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
-            weights.append(w)
-
-        columns = state.get_cols()
-        h = 0
-        count = 0
-        for column in columns:
-            h += (column.count(1) - column.count(-1)) * weights[count]
-            count += 1
-
+        cols = state.get_cols()
+        middle = state.num_rows // 2
+        h = cols[middle].count(1) - cols[middle].count(-1)
         return h
+
+
+        # number_of_columns = state.num_cols
+        # split_columns = number_of_columns // 2
+        #
+        # sd = math.ceil(number_of_columns / 4)
+        # weights = []
+        #
+        # for i in range(-split_columns, split_columns + 1):
+        #     w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+        #     weights.append(w)
+        #
+        # columns = state.get_cols()
+        # h = 0
+        # count = 0
+        # for column in columns:
+        #     h += (column.count(1) - column.count(-1)) * weights[count]
+        #     count += 1
+        #
+        # return h
 
 
 class MinimaxPruneAgent(MinimaxAgent):
