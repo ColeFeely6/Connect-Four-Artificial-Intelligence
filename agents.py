@@ -213,15 +213,16 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant. 
 
-        number_of_columns = state.get_cols()
-
+        columns_array = state.get_cols()
 
         middle = state.num_rows // 2
-        left_from_mid = number_of_columns[middle].count(1)
-        right_from_mid = number_of_columns[middle].count(-1)
+        positives = columns_array[middle].count(1) # count the number of '1's' in the middle column
+        negatives = columns_array[middle].count(-1) # count the number of '-1's' in the middle column
 
 
-        return (left_from_mid - right_from_mid)
+        return (positives - negatives)
+
+
 
 
 
@@ -253,20 +254,60 @@ class MinimaxPruneAgent(MinimaxAgent):
         # #
         # return 13  # Change this line!
         nextp = state.next_player()
-    #     if nextp == -1:
-    #         return_value = self.get_min_value(state, depth=0)  # find min value
-    #
-    #
-    #     elif nextp == 1:
-    #         return_value = self.get_max_value(state, depth=0)  # find max value
-    #
-    #     else:
-    #         return_value = 0
-    #
-    #     return return_value
-    #
-    #
-    # def get_min_value(self, state, depth):
+        if nextp == -1:
+            utility = self.get_minimum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
+
+        elif nextp == 1:  # input state is opponent, wants to minimize
+            utility = self.max_val(state, alpha=-math.inf, beta=math.inf, depth=0)
+
+        else:
+            utility = 0
+
+
+        return utility
+
+    def get_minimum_value(self, state, alpha, beta, depth):
+
+        if depth == self.depth_limit:
+            return self.evaluation(state)
+        if state.is_full():
+            return state.utility()
+
+        v = math.inf
+
+        successors = state.successors()
+        next_depth = depth + 1
+        for a, s in successors:
+            v = min(v, self.max_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
+
+        return v
+    def get_maximum_value(self, state, alpha, beta, depth):
+
+
+        if state.is_full():
+            return state.utility()
+
+        if depth == self.depth_limit:
+            return self.evaluation(state)
+
+        v = -math.inf
+
+        successors = state.successors()
+        next_depth = depth + 1
+        for a, s in successors:
+            v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v >= beta:
+                return v
+            alpha = max(alpha, v)
+
+        return v
+
+
+
+
     def alphabeta(self, state,alpha, beta):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
         # return 9 # change this line!
