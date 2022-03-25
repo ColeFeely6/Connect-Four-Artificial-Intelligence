@@ -258,7 +258,7 @@ class MinimaxPruneAgent(MinimaxAgent):
             utility = self.get_minimum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
 
         elif nextp == 1:  # input state is opponent, wants to minimize
-            utility = self.max_val(state, alpha=-math.inf, beta=math.inf, depth=0)
+            utility = self.get_maximum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
 
         else:
             utility = 0
@@ -278,7 +278,7 @@ class MinimaxPruneAgent(MinimaxAgent):
         successors = state.successors()
         next_depth = depth + 1
         for a, s in successors:
-            v = min(v, self.max_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            v = min(v, self.get_maximum_value(s, alpha=alpha, beta=beta, depth=next_depth))
             if v <= alpha:
                 return v
             beta = min(beta, v)
