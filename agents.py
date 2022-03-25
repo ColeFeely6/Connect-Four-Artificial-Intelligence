@@ -226,162 +226,87 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
 
 
-# class MinimaxPruneAgent(MinimaxHeuristicAgent):
-#     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
-#     Hint: Consider what you did for MinimaxAgent. What do you need to change to get what you want?
-#     """
-#     def __init__(self, depth_limit):
-#         self.depth_limit = depth_limit
-#
-#     def minimax(self, state):
-#         """Determine the minimax utility value the given state using alpha-beta pruning.
-#
-#         The value should be equal to the one determined by MinimaxAgent.minimax(), but the
-#         algorithm should do less work.  You can check this by inspecting the value of the class
-#         variable GameState.state_count, which keeps track of how many GameState objects have been
-#         created over time.  This agent should also respect the depth limit like HeuristicAgent.
-#
-#         N.B.: When exploring the game tree and expanding nodes, you must consider the child nodes
-#         in the order that they are returned by GameState.successors().  That is, you cannot prune
-#         the state reached by moving to column 4 before you've explored the state reached by a move
-#         to to column 1.
-#
-#         Args:
-#             state: a connect383.GameState object representing the current board
-#
-#         Returns: the minimax utility value of the state
-#         """
-#         # #
-#         # # Fill this in!
-#         # #
-#         # return 13  # Change this line!
-#         nextp = state.next_player()
-#         if nextp == -1:
-#             utility = self.get_minimum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
-#
-#         elif nextp == 1:  # input state is opponent, wants to minimize
-#             utility = self.get_maximum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
-#
-#         else:
-#             utility = 0
-#
-#
-#         return utility
-#
-#     def get_minimum_value(self, state, alpha, beta, depth):
-#
-#         if depth == self.depth_limit:
-#             return self.evaluation(state)
-#         if state.is_full():
-#             return state.utility()
-#
-#         v = math.inf
-#
-#         successors = state.successors()
-#         next_depth = depth + 1
-#         for a, s in successors:
-#             v = min(v, self.get_maximum_value(s, alpha=alpha, beta=beta, depth=next_depth))
-#             if v <= alpha:
-#                 return v
-#             beta = min(beta, v)
-#
-#         return v
-#     def get_maximum_value(self, state, alpha, beta, depth):
-#
-#
-#         if state.is_full():
-#             return state.utility()
-#
-#         if depth == self.depth_limit:
-#             return self.evaluation(state)
-#
-#         v = -math.inf
-#
-#         successors = state.successors()
-#         next_depth = depth + 1
-#         for a, s in successors:
-#             v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
-#             if v >= beta:
-#                 return v
-#             alpha = max(alpha, v)
-#
-#         return v
+class MinimaxPruneAgent(MinimaxAgent):
+    """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
+    Hint: Consider what you did for MinimaxAgent. What do you need to change to get what you want?
+    """
+    def __init__(self, depth_limit):
+        self.depth_limit = depth_limit
 
-    class MinimaxHeuristicPruneAgent(MinimaxAgent):
-        """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move."""
+    def minimax(self, state):
+        """Determine the minimax utility value the given state using alpha-beta pruning.
 
-        def minimax(self, state):
-            """Determine the minimax utility value the given state using alpha-beta pruning.
+        The value should be equal to the one determined by MinimaxAgent.minimax(), but the
+        algorithm should do less work.  You can check this by inspecting the value of the class
+        variable GameState.state_count, which keeps track of how many GameState objects have been
+        created over time.  This agent should also respect the depth limit like HeuristicAgent.
 
-            The value should be equal to the one determined by MinimaxAgent.minimax(), but the
-            algorithm should do less work.  You can check this by inspecting the value of the class
-            variable GameState.state_count, which keeps track of how many GameState objects have been
-            created over time.  This agent should also respect the depth limit like HeuristicAgent.
+        N.B.: When exploring the game tree and expanding nodes, you must consider the child nodes
+        in the order that they are returned by GameState.successors().  That is, you cannot prune
+        the state reached by moving to column 4 before you've explored the state reached by a move
+        to to column 1.
 
-            N.B.: When exploring the game tree and expanding nodes, you must consider the child nodes
-            in the order that they are returned by GameState.successors().  That is, you cannot prune
-            the state reached by moving to column 4 before you've explored the state reached by a move
-            to to column 1.
+        Args:
+            state: a connect383.GameState object representing the current board
 
-            Args:
-                state: a connect383.GameState object representing the current board
+        Returns: the minimax utility value of the state
+        """
+        # #
+        # # Fill this in!
+        # #
+        # return 13  # Change this line!
+        nextp = state.next_player()
+        if nextp == -1:
+            utility = self.get_minimum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
 
-            Returns: the minimax utility value of the state
-            """
-            next_player = state.next_player()  # determine whether this state is a MAX or MIN ply
+        elif nextp == 1:  # input state is opponent, wants to minimize
+            utility = self.get_maximum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
+
+        else:
             utility = 0
 
-            if next_player == -1:
-                utility = self.min_val(state, alpha=-math.inf, beta=math.inf,
-                                       depth=0)  # input state is agent, wants to maximize
-            elif next_player == 1:  # input state is opponent, wants to minimize
-                utility = self.max_val(state, alpha=-math.inf, beta=math.inf, depth=0)
-            return utility
 
-        def max_val(self, state, **kwargs):
-            alpha = kwargs["alpha"]
-            beta = kwargs["beta"]
-            current_depth = kwargs["depth"]
+        return utility
 
-            if state.is_full():
-                return state.utility()
+    def get_minimum_value(self, state, alpha, beta, depth):
 
-            if current_depth == self.depth_limit:
-                return self.evaluation(state)
+        if depth == self.depth_limit:
+            return self.evaluation(state)
+        if state.is_full():
+            return state.utility()
 
-            v = -math.inf
+        v = math.inf
 
-            successors = state.successors()
-            next_depth = current_depth + 1
-            for a, s in successors:
-                v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
-                if v >= beta:
-                    return v
-                alpha = max(alpha, v)
+        successors = state.successors()
+        next_depth = depth + 1
+        for a, s in successors:
+            v = min(v, self.get_maximum_value(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
 
-            return v
+        return v
+    def get_maximum_value(self, state, alpha, beta, depth):
 
-        def min_val(self, state, **kwargs):
-            alpha = kwargs["alpha"]
-            beta = kwargs["beta"]
-            current_depth = kwargs["depth"]
 
-            if current_depth == self.depth_limit:
-                return self.evaluation(state)
-            if state.is_full():
-                return state.utility()
+        if state.is_full():
+            return state.utility()
 
-            v = math.inf
+        if depth == self.depth_limit:
+            return self.evaluation(state)
 
-            successors = state.successors()
-            next_depth = current_depth + 1
-            for a, s in successors:
-                v = min(v, self.max_val(s, alpha=alpha, beta=beta, depth=next_depth))
-                if v <= alpha:
-                    return v
-                beta = min(beta, v)
+        v = -math.inf
 
-            return v
+        successors = state.successors()
+        next_depth = depth + 1
+        for a, s in successors:
+            v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v >= beta:
+                return v
+            alpha = max(alpha, v)
+
+        return v
+
 
 
     def alphabeta(self, state,alpha, beta):
