@@ -226,7 +226,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
 
 
-class MinimaxPruneAgent(MinimaxAgent):
+class MinimaxPruneAgent(MinimaxHeuristicAgent):
     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
     Hint: Consider what you did for MinimaxAgent. What do you need to change to get what you want? 
     """
