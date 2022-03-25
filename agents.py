@@ -307,7 +307,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 #
 #         return v
 
-    class MinimaxHeuristicPruneAgent(MinimaxHeuristicAgent):
+    class MinimaxHeuristicPruneAgent(MinimaxAgent):
         """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move."""
 
         def minimax(self, state):
