@@ -270,10 +270,13 @@ class MinimaxPruneAgent(MinimaxAgent):
 
     def get_minimum_value(self, state, alpha, beta, depth):
 
-        if depth == self.depth_limit:
-            return self.evaluation(state)
+
         if state.is_full():
             return state.utility()
+
+        if depth == self.depth_limit:
+            return self.evaluation(state)
+
 
         v = math.inf
 
@@ -286,14 +289,16 @@ class MinimaxPruneAgent(MinimaxAgent):
             beta = min(beta, v)
 
         return v
+    
     def get_maximum_value(self, state, alpha, beta, depth):
 
+        if depth == self.depth_limit:
+            return self.evaluation(state)
 
         if state.is_full():
             return state.utility()
 
-        if depth == self.depth_limit:
-            return self.evaluation(state)
+
 
         v = -math.inf
 
