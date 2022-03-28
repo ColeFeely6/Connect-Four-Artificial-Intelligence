@@ -259,7 +259,7 @@ class MinimaxPruneAgent(MinimaxAgent):
         if nextp == -1:
             utility = self.get_minimum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
 
-        elif nextp == 1:  # input state is opponent, wants to minimize
+        elif nextp == 1:
             utility = self.get_maximum_value(state, alpha=-math.inf, beta=math.inf, depth=0)
 
         else:
@@ -268,9 +268,10 @@ class MinimaxPruneAgent(MinimaxAgent):
 
         return utility
 
-    def get_minimum_value(self, state, alpha, beta, depth):
-
-
+    def get_minimum_value(self, state, **kwargs):
+        alpha = kwargs["alpha"]
+        beta = kwargs["beta"]
+        depth = kwargs["depth"]
         if state.is_full():
             return state.utility()
 
@@ -289,8 +290,11 @@ class MinimaxPruneAgent(MinimaxAgent):
             beta = min(beta, v)
 
         return v
-    
-    def get_maximum_value(self, state, alpha, beta, depth):
+
+    def get_maximum_value(self, state, **kwargs):
+        alpha = kwargs["alpha"]
+        beta = kwargs["beta"]
+        depth = kwargs["depth"]
 
         if depth == self.depth_limit:
             return self.evaluation(state)
