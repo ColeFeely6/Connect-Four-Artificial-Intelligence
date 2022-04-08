@@ -223,7 +223,7 @@ if __name__ == "__main__":
             player = HumanAgent()
         elif p == 'c':
             if args.prune:
-                player = MinimaxPruneAgent()  # ignores any depth limit
+                player = MinimaxPruneAgent(args.depth)  # ignores any depth limit
             else:
                 if args.depth == None:
                     player = MinimaxAgent()

@@ -151,7 +151,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         return return_value
 
     def get_max_value(self, state, **arguments):
-        ## Reviewed by Cole
+
         return_value = -math.inf
         curr_depth = arguments["depth"]
         succs = state.successors()
@@ -171,7 +171,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         return return_value
 
     def get_min_value(self, state, **arguments):
-        ## Reviewed by Cole
+
         return_value = math.inf
         succs = state.successors()
         curr_depth = arguments["depth"]
