@@ -150,19 +150,18 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return return_value
 
-    def get_max_value(self, state, **arguments):
+    def get_max_value(self, state, alpha, beta, depth):
 
         return_value = -math.inf
-        curr_depth = arguments["depth"]
         succs = state.successors()
 
-        if curr_depth == self.depth_limit:
+        if depth == self.depth_limit:
             return self.evaluation(state)
 
         if state.is_full():
             return state.utility()
 
-        next_depth = curr_depth + 1
+        next_depth = depth + 1
 
         for i, j in succs:
             maximum = self.get_max_value(j, depth=next_depth)
@@ -170,19 +169,18 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return return_value
 
-    def get_min_value(self, state, **arguments):
+    def get_min_value(self, state, alpha, beta, depth):
 
         return_value = math.inf
         succs = state.successors()
-        curr_depth = arguments["depth"]
 
-        if curr_depth == self.depth_limit:
+        if depth == self.depth_limit:
             return self.evaluation(state)
 
         if state.is_full():
             return state.utility()
 
-        next_depth = curr_depth + 1
+        next_depth = depth + 1
 
         for i, j in succs:
             minimum = self.get_min_value(j, depth=next_depth)
@@ -210,7 +208,8 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # # Fill this in!
         # #
 
-        # Change this line!
+        # Change this line!2
+
         # Note: This cannot be "return state.utility() + c", where c is a constant. 
 
         columns_array = state.get_cols()
@@ -268,53 +267,45 @@ class MinimaxPruneAgent(MinimaxAgent):
 
         return utility
 
-    def get_minimum_value(self, state, **kwargs):
-        alpha = kwargs["alpha"]
-        beta = kwargs["beta"]
-        depth = kwargs["depth"]
-        if state.is_full():
-            return state.utility()
-
-        if depth == self.depth_limit:
-            return self.evaluation(state)
-
-
-        v = math.inf
-
+    def get_minimum_value(self, state, alpha, beta, depth):
         successors = state.successors()
         next_depth = depth + 1
-        for a, s in successors:
-            v = min(v, self.get_maximum_value(s, alpha=alpha, beta=beta, depth=next_depth))
-            if v <= alpha:
-                return v
-            beta = min(beta, v)
+        v = math.inf
 
-        return v
-
-    def get_maximum_value(self, state, **kwargs):
-        alpha = kwargs["alpha"]
-        beta = kwargs["beta"]
-        depth = kwargs["depth"]
-
-        if depth == self.depth_limit:
-            return self.evaluation(state)
 
         if state.is_full():
             return state.utility()
 
+        if depth == self.depth_limit:
+            return self.evaluation(state)
 
+        for i, j in successors:
+            return_value = min(return_value, self.get_maximum_value(j, alpha=alpha, beta=beta, depth=next_depth))
+            if return_value <= alpha:
+                return return_value
+            beta = min(beta, return_value)
 
+        return return_value
+
+    def get_maximum_value(self, state, alpha, beta, depth):
         v = -math.inf
 
         successors = state.successors()
         next_depth = depth + 1
-        for a, s in successors:
-            v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
-            if v >= beta:
-                return v
-            alpha = max(alpha, v)
 
-        return v
+        if depth == self.depth_limit:
+            return self.evaluation(state)
+
+        if state.is_full():
+            return state.utility()
+
+        for i, j in successors:
+            return_value = max(return_value, self.min_val(j, alpha=alpha, beta=beta, depth=next_depth))
+            if return_value >= beta:
+                return return_value
+            alpha = max(alpha, return_value)
+
+        return return_value
 
 
 
