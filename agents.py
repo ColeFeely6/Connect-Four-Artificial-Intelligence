@@ -248,54 +248,43 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant.
 
-        # number_of_columns = state.num_cols
-        # ci = number_of_columns // 2
+        number_of_columns = state.num_cols
+        ci = number_of_columns // 2
+
+        sd = math.ceil(number_of_columns / 4)
+        weights = []
+
+        for i in range(-ci, ci + 1):
+            w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+            weights.append(w)
+
+        columns = state.get_cols()
+        h = 0
+        count = 0
+        for column in columns:
+            h += (column.count(1) - column.count(-1)) * weights[count]
+            count += 1
+
+        return h
         #
-        # sd = math.ceil(number_of_columns / 4)
+        # ncols = state.num_cols
+        # ci = ncols // 2
+        #
+        # sd = math.ceil(ncols / 4)
         # weights = []
         #
         # for i in range(-ci, ci + 1):
-        #     w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+        #     w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
         #     weights.append(w)
         #
-        # columns = state.get_cols()
+        # cols = state.get_cols()
         # h = 0
         # count = 0
-        # for column in columns:
-        #     h += (column.count(1) - column.count(-1)) * weights[count]
+        # for col in cols:
+        #     h += (col.count(1) - col.count(-1)) * weights[count]
         #     count += 1
         #
         # return h
-
-        players = [1, -1]
-        open_streaks = {1: 0, -1: 0}
-        for p in players:
-            for run in state.get_rows() + state.get_cols() + state.get_diags():
-                garfield = list(zip(*self.streaks(run)))
-
-                if 0 not in garfield[0]:
-                    continue
-
-                for s in garfield[1]:
-                    if (s >= 3) and (p == garfield[0][garfield[1].index(s)]):
-                        open_streaks[p] += 1
-
-        return open_streaks[1] - open_streaks[-1]
-
-    def streaks(self, lst):
-        """Get the lengths of all the streaks of the same element in a sequence."""
-        rets = []  # list of (element, length) tuples
-        prev = lst[0]
-        curr_len = 1
-        for curr in lst[1:]:
-            if curr == prev:
-                curr_len += 1
-            else:
-                rets.append((prev, curr_len))
-                prev = curr
-                curr_len = 1
-        rets.append((prev, curr_len))
-        return rets
 
 class MinimaxPruneAgent(MinimaxAgent):
     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
