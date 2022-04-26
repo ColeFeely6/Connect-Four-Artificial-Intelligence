@@ -300,28 +300,28 @@ class MinimaxPruneAgent(MinimaxAgent):
         return v
 
 
-def get_max_value(self, state, **kwargs):
-    alpha = kwargs["alpha"]
-    beta = kwargs["beta"]
-    current_depth = kwargs["depth"]
+    def get_max_value(self, state, **kwargs):
+        alpha = kwargs["alpha"]
+        beta = kwargs["beta"]
+        current_depth = kwargs["depth"]
 
-    if state.is_full():
-        return state.utility()
+        if state.is_full():
+            return state.utility()
 
-    if current_depth == self.depth_limit:
-        return self.evaluation(state)
+        if current_depth == self.depth_limit:
+            return self.evaluation(state)
 
-    v = -math.inf
+        v = -math.inf
 
-    successors = state.successors()
-    next_depth = current_depth + 1
-    for a, s in successors:
-        v = max(v, self.get_min_value(s, alpha=alpha, beta=beta, depth=next_depth))
-        if v >= beta:
-            return v
-        alpha = max(alpha, v)
+        successors = state.successors()
+        next_depth = current_depth + 1
+        for a, s in successors:
+            v = max(v, self.get_min_value(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v >= beta:
+                return v
+            alpha = max(alpha, v)
 
-    return v
+        return v
 
     def alphabeta(self, state, alpha, beta, is_max_player):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
