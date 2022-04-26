@@ -1,7 +1,7 @@
 import sys
 import argparse
 from agents import RandomAgent, HumanAgent, MinimaxAgent, MinimaxHeuristicAgent, \
-                    MinimaxPruneAgent, OtherMinimaxHeuristicAgent
+    MinimaxPruneAgent, OtherMinimaxHeuristicAgent
 import test_boards
 
 
@@ -16,9 +16,9 @@ class GameState:
     The board is stored as a 2D list, containing 1's representing Player 1's pieces and -1's
     for Player 2 (unused spaces are 0, and "obstacles" are -2).
     """
-    
+
     state_count = 0  # bookkeeping to help track how efficient agents' search methods are running
-    
+
     def __init__(self, *args):
         """Constructor for Connect383 state.
 
@@ -30,15 +30,15 @@ class GameState:
             r, c = args
             self.num_rows = r
             self.num_cols = c
-            self.board = tuple([ tuple([0]*self.num_cols) ]*self.num_rows)  
+            self.board = tuple([tuple([0] * self.num_cols)] * self.num_rows)
         else:
             board = args[0]
             self.num_rows = len(board)
             self.num_cols = len(board[0])
-            self.board = tuple([ tuple(board[r]) for r in range(self.num_rows) ])
+            self.board = tuple([tuple(board[r]) for r in range(self.num_rows)])
 
         # 1 for Player 1, -1 for Player 2
-        self._next_p = 1 if (sum(sum(row) for row in self.board) % 2) == 0 else -1  
+        self._next_p = 1 if (sum(sum(row) for row in self.board) % 2) == 0 else -1
         self._moves_left = sum(sum([1 if x == 0 else 0 for x in row]) for row in self.board)
 
     def next_player(self):
@@ -55,7 +55,7 @@ class GameState:
     def _create_successor(self, col):
         """Create the successor state that follows from a given move."""
 
-        successor_board = [ list(row) for row in self.board ]
+        successor_board = [list(row) for row in self.board]
         row = 0
         while (successor_board[row][col] != 0):
             row += 1
@@ -73,14 +73,14 @@ class GameState:
         """
         move_states = []
         for col in range(self.num_cols):
-            if self.board[self.num_rows-1][col] == 0:
-                move_states.append((col, self._create_successor(col)))        
+            if self.board[self.num_rows - 1][col] == 0:
+                move_states.append((col, self._create_successor(col)))
         return move_states
 
     # These accessor methods might be useful for calculation an agent's evaluation method!  They
     # are based on:
     # https://stackoverflow.com/questions/6313308/get-all-the-diagonals-in-a-matrix-list-of-lists-in-python
-    
+
     def get_rows(self):
         """Return a list of rows for the board."""
         return [[c for c in r] for r in self.board]
@@ -100,23 +100,23 @@ class GameState:
 
     def scores(self):
         """Calculate the score for each player.
-        
+
         Players are awarded points for each streak (horizontal, vertical, or diagonal) of length 3
-        or greater equal to the square of the length (e.g., 4-in-a-row scores 16 points).        
+        or greater equal to the square of the length (e.g., 4-in-a-row scores 16 points).
         """
         p1_score = 0
         p2_score = 0
         for run in self.get_rows() + self.get_cols() + self.get_diags():
             for elt, length in streaks(run):
                 if (elt == 1) and (length >= 3):
-                    p1_score += length**2
+                    p1_score += length ** 2
                 elif (elt == -1) and (length >= 3):
-                    p2_score += length**2
+                    p2_score += length ** 2
         return p1_score, p2_score
 
     def utility(self):
         """Return the utility of the state as determined by score().
-        
+
         The utility is from the perspective of Player 1; i.e., when it is positive, Player 1 wins;
         when negative, Player 2 wins.
         """
@@ -124,9 +124,9 @@ class GameState:
         return s1 - s2
 
     def __str__(self):
-        symbols = { -1: "O", 1: "X", 0: "-", -2: "#" }
+        symbols = {-1: "O", 1: "X", 0: "-", -2: "#"}
         s = ""
-        for r in range(self.num_rows-1, -1, -1):
+        for r in range(self.num_rows - 1, -1, -1):
             s += "\n"
             for c in range(self.num_cols):
                 s += "  " + symbols[self.board[r][c]]
@@ -138,7 +138,7 @@ class GameState:
         return s
 
 
-def streaks(lst):  
+def streaks(lst):
     """Get the lengths of all the streaks of the same element in a sequence."""
     rets = []  # list of (element, length) tuples
     prev = lst[0]
@@ -176,14 +176,14 @@ def play_game(player1, player2, state):
         if state.next_player() == 1:
             p1_state_count += states_created
         else:
-            p2_state_count += states_created        
+            p2_state_count += states_created
 
-        print("Turn {}:".format(turn))        
+        print("Turn {}:".format(turn))
         print("Player {} generated {} states".format(1 if state.next_player() == 1 else 2, states_created))
         print("Player {} moves to column {}".format(1 if state.next_player() == 1 else 2, move))
         print(state_next)
         print("Current score is:", state_next.scores(), "\n\n")
-       
+
         turn += 1
         state = state_next
 
@@ -205,15 +205,15 @@ def play_game(player1, player2, state):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('p1', choices=['r','h','c','o'])
-    parser.add_argument('p2', choices=['r','h','c','o'])
+    parser.add_argument('p1', choices=['r', 'h', 'c', 'o'])
+    parser.add_argument('p2', choices=['r', 'h', 'c', 'o'])
     parser.add_argument('nrows', type=int)
     parser.add_argument('ncols', type=int)
     parser.add_argument('--prune', action='store_true')
     parser.add_argument('--depth', type=int)
     parser.add_argument('--board', choices=test_boards.boards.keys())
     args = parser.parse_args()
-    # print("args:", args)  
+    # print("args:", args)
 
     players = []
     for p in [args.p1, args.p2]:
@@ -223,7 +223,7 @@ if __name__ == "__main__":
             player = HumanAgent()
         elif p == 'c':
             if args.prune:
-                player = MinimaxPruneAgent(args.depth)  # ignores any depth limit
+                player = MinimaxPruneAgent()  # ignores any depth limit
             else:
                 if args.depth == None:
                     player = MinimaxAgent()
@@ -231,7 +231,7 @@ if __name__ == "__main__":
                     player = MinimaxHeuristicAgent(args.depth)
         elif p == 'o':
             player = OtherMinimaxHeuristicAgent(args.depth)
-        players.append(player)            
+        players.append(player)
 
     if args.board:
         board = list(test_boards.boards[args.board])
