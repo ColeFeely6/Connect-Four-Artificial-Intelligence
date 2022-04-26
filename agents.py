@@ -152,6 +152,14 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         return return_value
 
     def get_max_value(self, state, depth):
+
+        if state.is_full():
+            return state.utility()
+
+        if depth >= self.depth_limit:
+            return self.evaluation(state)
+
+
         return_value = math.inf
         for move, successor in state.successors():
             next = self.get_min_value(successor, depth+1)
@@ -178,6 +186,15 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # return return_value
 
     def get_min_value(self, state, depth):
+
+
+        if state.is_full():
+            return state.utility()
+
+        if depth >= self.depth_limit:
+            return self.evaluation(state)
+
+
         return_value = -math.inf
         for move, successor in state.successors():
             next = self.get_max_value(successor, depth + 1)
