@@ -263,11 +263,11 @@ class MinimaxPruneAgent(MinimaxAgent):
         # return 13  # Change this line!
         nextp = state.next_player()
         if nextp == -1:
-            return_value = self.min_val(state, alpha=-math.inf, beta=math.inf, depth=0)  # find min value
+            return_value = self.get_min_value(state, alpha=-math.inf, beta=math.inf, depth=0)  # find min value
 
 
         elif nextp == 1:
-            return_value = self.max_val(state, alpha=-math.inf, beta=math.inf, depth=0)  # find max value
+            return_value = self.get_max_value(state, alpha=-math.inf, beta=math.inf, depth=0)  # find max value
 
         else:
             return_value = 0
@@ -290,7 +290,7 @@ class MinimaxPruneAgent(MinimaxAgent):
         successors = state.successors()
         next_depth = current_depth + 1
         for a, s in successors:
-            v = min(v, self.max_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            v = min(v, self.get_max_value(s, alpha=alpha, beta=beta, depth=next_depth))
             if v <= alpha:
                 return v
             beta = min(beta, v)
@@ -314,7 +314,7 @@ def get_max_value(self, state, **kwargs):
     successors = state.successors()
     next_depth = current_depth + 1
     for a, s in successors:
-        v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
+        v = max(v, self.get_min_value(s, alpha=alpha, beta=beta, depth=next_depth))
         if v >= beta:
             return v
         alpha = max(alpha, v)
