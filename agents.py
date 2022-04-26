@@ -284,11 +284,12 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         columns = state.get_cols()
 
+
         return_val = 0
-
-        for i in columns:
-            return_val += (i.count(1) - i.count(-1)) * weights[i]
-
+        count = 0
+        for col in columns:
+            return_val += (col.count(1) - col.count(-1)) * weights[count]
+            count += 1
 
         return return_val
 
