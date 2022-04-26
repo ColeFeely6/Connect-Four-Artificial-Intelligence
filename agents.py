@@ -262,20 +262,65 @@ class MinimaxPruneAgent(MinimaxAgent):
         # #
         # return 13  # Change this line!
         nextp = state.next_player()
-    #     if nextp == -1:
-    #         return_value = self.get_min_value(state, depth=0)  # find min value
-    #
-    #
-    #     elif nextp == 1:
-    #         return_value = self.get_max_value(state, depth=0)  # find max value
-    #
-    #     else:
-    #         return_value = 0
-    #
-    #     return return_value
-    #
-    #
-    # def get_min_value(self, state, depth):
+         if nextp == -1:
+             return_value = self.get_min_value(state, depth=0)  # find min value
+
+
+         elif nextp == 1:
+             return_value = self.get_max_value(state, depth=0)  # find max value
+
+         else:
+             return_value = 0
+
+         return return_value
+
+
+    def get_min_value(self, state, **kwargs):
+        alpha = kwargs["alpha"]
+        beta = kwargs["beta"]
+        current_depth = kwargs["depth"]
+
+        if current_depth == self.depth_limit:
+            return self.evaluation(state)
+        if state.is_full():
+            return state.utility()
+
+        v = math.inf
+
+        successors = state.successors()
+        next_depth = current_depth + 1
+        for a, s in successors:
+            v = min(v, self.max_val(s, alpha=alpha, beta=beta, depth=next_depth))
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
+
+        return v
+
+
+def get_max_value(self, state, **kwargs):
+    alpha = kwargs["alpha"]
+    beta = kwargs["beta"]
+    current_depth = kwargs["depth"]
+
+    if state.is_full():
+        return state.utility()
+
+    if current_depth == self.depth_limit:
+        return self.evaluation(state)
+
+    v = -math.inf
+
+    successors = state.successors()
+    next_depth = current_depth + 1
+    for a, s in successors:
+        v = max(v, self.min_val(s, alpha=alpha, beta=beta, depth=next_depth))
+        if v >= beta:
+            return v
+        alpha = max(alpha, v)
+
+    return v
+
     def alphabeta(self, state,alpha, beta):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
         # return 9 # change this line!
