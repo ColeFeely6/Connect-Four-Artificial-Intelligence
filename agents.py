@@ -267,24 +267,35 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         #
         # return h
 
-        ncols = state.num_cols
-        ci = ncols // 2
+        players = [1, -1]
+        open_streaks = {1: 0, -1: 0}
+        for p in players:
+            for run in state.get_rows() + state.get_cols() + state.get_diags():
+                garfield = list(zip(*self.streaks(run)))
 
-        sd = math.ceil(ncols / 4)
-        weights = []
+                if 0 not in garfield[0]:
+                    continue
 
-        for i in range(-ci, ci + 1):
-            w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
-            weights.append(w)
+                for s in garfield[1]:
+                    if (s >= 3) and (p == garfield[0][garfield[1].index(s)]):
+                        open_streaks[p] += 1
 
-        cols = state.get_cols()
-        h = 0
-        count = 0
-        for col in cols:
-            h += (col.count(1) - col.count(-1)) * weights[count]
-            count += 1
+        return open_streaks[1] - open_streaks[-1]
 
-        return h
+    def streaks(self, lst):
+        """Get the lengths of all the streaks of the same element in a sequence."""
+        rets = []  # list of (element, length) tuples
+        prev = lst[0]
+        curr_len = 1
+        for curr in lst[1:]:
+            if curr == prev:
+                curr_len += 1
+            else:
+                rets.append((prev, curr_len))
+                prev = curr
+                curr_len = 1
+        rets.append((prev, curr_len))
+        return rets
 
 class MinimaxPruneAgent(MinimaxAgent):
     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
