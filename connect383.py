@@ -1,8 +1,8 @@
 import sys
 import argparse
-from agents import RandomAgent, HumanAgent, MinimaxAgent, MinimaxHeuristicAgent, \
-    MinimaxPruneAgent, OtherMinimaxHeuristicAgent
+from agents import RandomAgent, HumanAgent, MinimaxAgent, MinimaxHeuristicAgent, MinimaxHeuristicPruneAgent
 import test_boards
+import time
 
 
 class GameState:
@@ -117,7 +117,7 @@ class GameState:
     def utility(self):
         """Return the utility of the state as determined by score().
 
-        The utility is from the perspective of Player 1; i.e., when it is positive, Player 1 wins;
+        The utility is from the perspextive of Player 1; i.e., when it is positive, Player 1 wins;
         when negative, Player 2 wins.
         """
         s1, s2 = self.scores()
@@ -200,13 +200,51 @@ def play_game(player1, player2, state):
     return score1, score2
 
 
+def play_game_a(player1, player2, state):
+    """Run a Connect383 game.
+
+    Player objects can be of any class that defines a get_move(state, depth) method that returns
+    a move, state tuple.
+    """
+    turn = 0
+    p1_state_count, p2_state_count = 0, 0
+
+    while not state.is_full():
+        player = player1 if state.next_player() == 1 else player2
+
+        state_count_before = GameState.state_count
+        move, state_next = player.get_move(state)
+        state_count_after = GameState.state_count
+
+        states_created = state_count_after - state_count_before
+        if state.next_player() == 1:
+            p1_state_count += states_created
+        else:
+            p2_state_count += states_created
+
+        turn += 1
+        state = state_next
+
+    score1, score2 = state.scores()
+    if score1 > score2:
+        print("Player 1 wins! {} - {}".format(score1, score2))
+    elif score1 < score2:
+        print("Player 2 wins! {} - {}".format(score1, score2))
+    else:
+        print("It's a tie. {} - {}".format(score1, score2))
+    print("Player 1 generated {} states".format(p1_state_count))
+    print("Player 2 generated {} states".format(p2_state_count))
+    print("")
+    return score1, score2
+
+
 #############################################
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('p1', choices=['r', 'h', 'c', 'o'])
-    parser.add_argument('p2', choices=['r', 'h', 'c', 'o'])
+    parser.add_argument('p1', choices=['r', 'h', 'c'])
+    parser.add_argument('p2', choices=['r', 'h', 'c'])
     parser.add_argument('nrows', type=int)
     parser.add_argument('ncols', type=int)
     parser.add_argument('--prune', action='store_true')
@@ -218,19 +256,17 @@ if __name__ == "__main__":
     players = []
     for p in [args.p1, args.p2]:
         if p == 'r':
-            player = RandomAgent()
+            player = RandomAgent(sd=time.time())  # remove sd when handing in
         elif p == 'h':
             player = HumanAgent()
         elif p == 'c':
-            if args.prune:
-                player = MinimaxPruneAgent()  # ignores any depth limit
+            if args.depth is None:
+                player = MinimaxAgent()
             else:
-                if args.depth == None:
-                    player = MinimaxAgent()
-                else:
+                if not args.prune:
                     player = MinimaxHeuristicAgent(args.depth)
-        elif p == 'o':
-            player = OtherMinimaxHeuristicAgent(args.depth)
+                else:
+                    player = MinimaxHeuristicPruneAgent(args.depth)
         players.append(player)
 
     if args.board:
@@ -240,4 +276,3 @@ if __name__ == "__main__":
         start_state = GameState(args.nrows, args.ncols)
 
     play_game(players[0], players[1], start_state)
-
