@@ -263,11 +263,13 @@ class MinimaxPruneAgent(MinimaxAgent):
         # return 13  # Change this line!
         nextp = state.next_player()
         if nextp == -1:
-            return_value = self.get_min_value(state, alpha=-math.inf, beta=math.inf, depth=0)  # find min value
+            is_max_player = True
+            return_value = self.alphabeta(state, -math.inf, math.inf, is_max_player)
 
 
         elif nextp == 1:
-            return_value = self.get_max_value(state, alpha=-math.inf, beta=math.inf, depth=0)  # find max value
+            is_max_player = False
+            return_value = self.alphabeta(state, -math.inf, math.inf, is_max_player)
 
         else:
             return_value = 0
@@ -321,9 +323,35 @@ def get_max_value(self, state, **kwargs):
 
     return v
 
-    def alphabeta(self, state,alpha, beta):
+    def alphabeta(self, state, alpha, beta, is_max_player):
         """ This is just a helper method for minimax(). Feel free to use it or not. """
         # return 9 # change this line!
+
+        if state.is_full() == True:
+            return state.utility()
+
+
+        if is_max_player == True:
+            best_value = -math.inf
+            for move, successor in state.successors():
+                best_value = max(best_value, alphabeta(successor, alpha, beta, False))
+                if best_value >= beta:
+                    break
+                beta = min(beta, best_value)
+            return best_value
+        else:
+            best_value = math.inf
+            for move, successor in state.successors():
+                best_value = min(best_value, alphabeta(successor, alpha, beta, True))
+                if best_value  <= alpha:
+                    break
+                beta = max(alpha, best_value)
+            return best_value
+
+
+
+
+
 
 
 class OtherMinimaxHeuristicAgent(MinimaxAgent):

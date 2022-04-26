@@ -2,6 +2,10 @@ Cole Feely and Zachary Zhao
 CS 383
 Homework 2
 
+We used geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/ to help us understand
+AlphaBeta Pruning
+
+
 Thoughts on eval function-
 
 our eval function was:
