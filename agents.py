@@ -247,44 +247,45 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         # Change this line!
         # Note: This cannot be "return state.utility() + c", where c is a constant.
-
-        number_of_columns = state.num_cols
-        ci = number_of_columns // 2
-
-        sd = math.ceil(number_of_columns / 4)
-        weights = []
-
-        for i in range(-ci, ci + 1):
-            w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
-            weights.append(w)
-
-        columns = state.get_cols()
-        h = 0
-        count = 0
-        for column in columns:
-            h += (column.count(1) - column.count(-1)) * weights[count]
-            count += 1
-
-        return h
         #
-        # ncols = state.num_cols
-        # ci = ncols // 2
+        # number_of_columns = state.num_cols
+        # ci = number_of_columns // 2
         #
-        # sd = math.ceil(ncols / 4)
+        # sd = math.ceil(number_of_columns / 4)
         # weights = []
         #
         # for i in range(-ci, ci + 1):
-        #     w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+        #     w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
         #     weights.append(w)
         #
-        # cols = state.get_cols()
+        # columns = state.get_cols()
         # h = 0
         # count = 0
-        # for col in cols:
-        #     h += (col.count(1) - col.count(-1)) * weights[count]
+        # for column in columns:
+        #     h += (column.count(1) - column.count(-1)) * weights[count]
         #     count += 1
         #
         # return h
+        #
+
+        ncols = state.num_cols
+        ci = ncols // 2
+
+        sd = math.ceil(ncols / 4)
+        weights = []
+
+        for i in range(-ci, ci + 1):
+            w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+            weights.append(w)
+
+        cols = state.get_cols()
+        h = 0
+        count = 0
+        for col in cols:
+            h += (col.count(1) - col.count(-1)) * weights[count]
+            count += 1
+
+        return h
 
 class MinimaxPruneAgent(MinimaxAgent):
     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
