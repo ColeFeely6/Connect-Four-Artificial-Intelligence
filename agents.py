@@ -151,45 +151,62 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return return_value
 
-    def get_max_value(self, state, **arguments):
-        ## Reviewed by Cole
-        return_value = -math.inf
-        curr_depth = arguments["depth"]
-        succs = state.successors()
-
-        if curr_depth == self.depth_limit:
-            return self.evaluation(state)
-
-        if state.is_full():
-            return state.utility()
-
-        next_depth = curr_depth + 1
-
-        for i, j in succs:
-            maximum = self.get_max_value(j, depth=next_depth)
-            return_value = min(return_value,maximum)
-
-        return return_value
-
-    def get_min_value(self, state, **arguments):
-        ## Reviewed by Cole
+    def get_max_value(self, state, depth):
         return_value = math.inf
-        succs = state.successors()
-        curr_depth = arguments["depth"]
-
-        if curr_depth == self.depth_limit:
-            return self.evaluation(state)
-
-        if state.is_full():
-            return state.utility()
-
-        next_depth = curr_depth + 1
-
-        for i, j in succs:
-            minimum = self.get_min_value(j, depth=next_depth)
-            return_value = min(return_value, minimum)
-
+        for move, successor in state.successors():
+            next = self.get_min_value(successor, depth+1)
+            if next < return_value: # get the minimum
+                return_value = next
         return return_value
+
+        #return min([self.minimax_depth(successor, depth + 1) for move, successor in state.successors()])
+
+        ## Reviewed by Cole
+        # return_value = -math.inf
+        # succs = state.successors()
+        #
+        # if depth >= self.depth_limit:
+        #     return self.evaluation(state)
+        #
+        # if state.is_full():
+        #     return state.utility()
+        #
+        # for i, j in succs:
+        #     maximum = self.get_max_value(j, depth=next_depth)
+        #     return_value = min(return_value,maximum)
+        #
+        # return return_value
+
+    def get_min_value(self, state, depth):
+        return_value = -math.inf
+        for move, successor in state.successors():
+            next = self.get_max_value(successor, depth + 1)
+            if next > return_value:  # get the maximum
+                return_value = next
+        return return_value
+
+
+
+        #
+        #
+        # ## Reviewed by Cole
+        # return_value = math.inf
+        # succs = state.successors()
+        # curr_depth = arguments["depth"]
+        #
+        # if curr_depth == self.depth_limit:
+        #     return self.evaluation(state)
+        #
+        # if state.is_full():
+        #     return state.utility()
+        #
+        # next_depth = curr_depth + 1
+        #
+        # for i, j in succs:
+        #     minimum = self.get_min_value(j, depth=next_depth)
+        #     return_value = min(return_value, minimum)
+        #
+        # return return_value
 
     def minimax_depth(self, state, depth):
         """This is just a helper method fir minimax(). Feel free to use it or not. """
