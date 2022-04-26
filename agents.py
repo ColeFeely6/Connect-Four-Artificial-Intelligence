@@ -334,7 +334,7 @@ class MinimaxPruneAgent(MinimaxAgent):
         if is_max_player == True:
             best_value = -math.inf
             for move, successor in state.successors():
-                best_value = max(best_value, alphabeta(successor, alpha, beta, False))
+                best_value = max(best_value, self.alphabeta(successor, alpha, beta, False))
                 if best_value >= beta:
                     break
                 beta = min(beta, best_value)
@@ -342,7 +342,7 @@ class MinimaxPruneAgent(MinimaxAgent):
         else:
             best_value = math.inf
             for move, successor in state.successors():
-                best_value = min(best_value, alphabeta(successor, alpha, beta, True))
+                best_value = min(best_value, self.alphabeta(successor, alpha, beta, True))
                 if best_value  <= alpha:
                     break
                 beta = max(alpha, best_value)
