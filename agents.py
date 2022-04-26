@@ -12,11 +12,11 @@ BOT_NAME = "Cole and Zach's Robot"
 
 class RandomAgent:
     """Agent that picks a random available move.  You should be able to beat it."""
-    def __init__(self, sd=None):
-        if sd is None:
+    def __init__(self, stand_dev=None):
+        if stand_dev is None:
             self.st = None
         else:
-            random.seed(sd)
+            random.seed(stand_dev)
             self.st = random.getstate()
 
     def get_move(self, state):
@@ -251,11 +251,11 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         # number_of_columns = state.num_cols
         # ci = number_of_columns // 2
         #
-        # sd = math.ceil(number_of_columns / 4)
+        # stand_dev = math.ceil(number_of_columns / 4)
         # weights = []
         #
         # for i in range(-ci, ci + 1):
-        #     w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
+        #     w = number_of_columns * (pow(math.pi * 2, -0.5) * pow(stand_dev, -1)) * math.exp(-0.5 * pow((i / stand_dev), 2))
         #     weights.append(w)
         #
         # columns = state.get_cols()
@@ -267,25 +267,30 @@ class MinimaxHeuristicAgent(MinimaxAgent):
         #
         # return h
         #
-
-        ncols = state.num_cols
-        ci = ncols // 2
-
-        sd = math.ceil(ncols / 4)
         weights = []
 
+
+        number_of_cols = state.num_cols
+        ci = number_of_cols // 2
+
+        stand_dev = math.ceil(number_of_cols / 4)
+
+
         for i in range(-ci, ci + 1):
-            w = ncols * (pow(math.pi * 2, -0.5) * pow(sd, -1)) * math.exp(-0.5 * pow((i / sd), 2))
-            weights.append(w)
+            sd1 = pow(math.pi * 2, -0.5) * pow(stand_dev, -1)
+            sd2 = math.exp(-0.5 * pow((i / stand_dev), 2))
+            weight = number_of_cols * sd1 * sd2
+            weights.append(weight)
 
-        cols = state.get_cols()
-        h = 0
-        count = 0
-        for col in cols:
-            h += (col.count(1) - col.count(-1)) * weights[count]
-            count += 1
+        columns = state.get_columns()
 
-        return h
+        return_val = 0
+
+        for i in columns:
+            return_val += (i.count(1) - i.count(-1)) * weights[i]
+
+
+        return return_val
 
 class MinimaxPruneAgent(MinimaxAgent):
     """Smarter computer agent that uses minimax with alpha-beta pruning to select the best move.
