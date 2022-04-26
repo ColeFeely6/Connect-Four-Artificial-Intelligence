@@ -150,7 +150,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return return_value
 
-    def get_max_value(self, state, alpha, beta, depth):
+    def get_max_value(self, state, depth):
 
         return_value = -math.inf
         succs = state.successors()
@@ -169,7 +169,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
 
         return return_value
 
-    def get_min_value(self, state, alpha, beta, depth):
+    def get_min_value(self, state, depth):
 
         return_value = math.inf
         succs = state.successors()
