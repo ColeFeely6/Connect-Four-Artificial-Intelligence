@@ -1,6 +1,6 @@
 import sys
 import argparse
-from agents import RandomAgent, HumanAgent, MinimaxAgent, MinimaxHeuristicAgent, MinimaxHeuristicPruneAgent
+from agents import RandomAgent, HumanAgent, MinimaxAgent, MinimaxHeuristicAgent, MinimaxPruneAgent
 import test_boards
 import time
 
