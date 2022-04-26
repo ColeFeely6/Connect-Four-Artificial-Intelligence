@@ -282,7 +282,7 @@ class MinimaxHeuristicAgent(MinimaxAgent):
             weight = number_of_cols * sd1 * sd2
             weights.append(weight)
 
-        columns = state.get_columns()
+        columns = state.get_cols()
 
         return_val = 0
 
