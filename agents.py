@@ -263,16 +263,16 @@ class MinimaxPruneAgent(MinimaxAgent):
         # return 13  # Change this line!
         nextp = state.next_player()
         if nextp == -1:
-             return_value = self.get_min_value(state, depth=0)  # find min value
+            return_value = self.get_min_value(state, depth=0)  # find min value
 
 
-         elif nextp == 1:
-             return_value = self.get_max_value(state, depth=0)  # find max value
+        elif nextp == 1:
+            return_value = self.get_max_value(state, depth=0)  # find max value
 
-         else:
-             return_value = 0
+        else:
+            return_value = 0
 
-         return return_value
+        return return_value
 
 
     def get_min_value(self, state, **kwargs):
